@@ -7,7 +7,6 @@ import SendSMS from "../Components/SendSMS";
 const HomePage = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
 
   useEffect(() => {
     setLoading(true);
@@ -31,7 +30,6 @@ const HomePage = () => {
       });
     });
     setData(val);
-    setMessage(msg);
   }, []);
 
   if (loading) return <Spinner message="Loading Your Data" />;
@@ -41,11 +39,10 @@ const HomePage = () => {
       <div className="flex flex-wrap items-center justify-between">
         {data &&
           data.map((value, index) => (
-            <DustbinBox key={index} data={value.data} name={value}/>
+            <DustbinBox key={index} data={value.data} name={value} />
           ))}
       </div>
-
-      <SendSMS to="+91706954487" msg="Hey There "/>
+      {/* <button className="w-10 p-4 bg-teal-500 rounded-md"></button> */}
     </div>
   );
 };

@@ -1,4 +1,4 @@
-const path = require('path');
+// const path = require('path');
 const express = require("express");
 const bodyParser = require("body-parser");
 const twilio = require("twilio");
@@ -9,11 +9,11 @@ require("dotenv").config();
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(express.static(path.join(__dirname, 'client/build')));
+// app.use(express.static(path.join(__dirname, 'client/build')));
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
-});
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+// });
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -30,7 +30,8 @@ app.post("/sms", (req, res) => {
   const authToken = process.env.TWILIO_AUTH_TOKEN;
   const client = twilio(accountSid, authToken);
   const { to, msg } = req.body;
-
+  console.log(to);
+  console.log(msg);
   client.messages
     .create({
       to: to,
@@ -38,7 +39,7 @@ app.post("/sms", (req, res) => {
       body: msg,
     })
     .then((message) => {
-      res.send(`SMS sent: ${message.sid}`);
+      res.send({ message: `SMS sent: ${message.sid}` });
     })
     .catch((error) => {
       res.status(500).send(error);

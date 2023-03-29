@@ -5,7 +5,7 @@ import { db } from "../firebase";
 
 const FullDustbinList = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [FullDustbin, setFullDustbin] = useState(null);
+  const [fullDustbin, setFullDustbin] = useState(null);
 
   useEffect(() => {
     setIsLoading(true);
@@ -18,46 +18,79 @@ const FullDustbinList = () => {
             data: childSnapshot.val(),
           });
           setIsLoading(false);
+          sendSMS(
+            "+917069588487",
+            `Your Dustbin ${childSnapshot.key} is ${
+              childSnapshot.val().level
+            }% Full`
+          );
         }
       });
     });
     setFullDustbin(val);
-  }, [FullDustbin]);
+  }, []);
+
+  const sendSMS = (to, message) => {
+    const API_BASE_URL = "http://localhost:3000";
+
+    fetch(API_BASE_URL + "/sms", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        to: to,
+        msg: message,
+      }),
+    })
+      .then((response) => {
+        return response.text();
+      })
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error("There was a problem with your fetch operation:", error);
+      });
+  };
 
   if (isLoading) return <Spinner />;
   return (
-    <div class="relative overflow-x-auto">
-      <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+    <div className="relative overflow-x-auto">
+      <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>
-            <th scope="col" class="px-6 py-3">
+            <th scope="col" className="px-6 py-3">
               Index
             </th>
-            <th scope="col" class="px-6 py-3">
+            <th scope="col" className="px-6 py-3">
               Dustbin name
             </th>
-            <th scope="col" class="px-6 py-3">
+            <th scope="col" className="px-6 py-3">
               Location
             </th>
-            <th scope="col" class="px-6 py-3">
+            <th scope="col" className="px-6 py-3">
               Level
             </th>
           </tr>
         </thead>
         <tbody>
-          {FullDustbin &&
-            FullDustbin.map((value, index) => {
+          {fullDustbin &&
+            fullDustbin.map((value, index) => {
               return (
-                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                <tr
+                  key={index}
+                  className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                >
                   <th
                     scope="row"
-                    class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                   >
                     {index}
                   </th>
-                  <td class="px-6 py-4">{value?.key}</td>
-                  <td class="px-6 py-4">{value.data?.address}</td>
-                  <td class="px-6 py-4">{value.data?.level}</td>
+                  <td className="px-6 py-4">{value?.key}</td>
+                  <td className="px-6 py-4">{value.data?.address}</td>
+                  <td className="px-6 py-4">{value.data?.level}</td>
                 </tr>
               );
             })}
