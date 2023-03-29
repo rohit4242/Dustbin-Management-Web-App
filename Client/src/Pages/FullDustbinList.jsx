@@ -31,7 +31,7 @@ const FullDustbinList = () => {
   }, []);
 
   const sendSMS = (to, message) => {
-    const API_BASE_URL = "http://localhost:3000";
+    const API_BASE_URL = "https://dustbin-management-web-app-server.vercel.app";
 
     fetch(API_BASE_URL + "/sms", {
       method: "POST",
