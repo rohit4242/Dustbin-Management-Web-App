@@ -1,4 +1,4 @@
-const path = require('path');
+// const path = require('path');
 const express = require("express");
 const bodyParser = require("body-parser");
 const twilio = require("twilio");
@@ -7,13 +7,13 @@ const cors = require("cors");
 require("dotenv").config();
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 4000;
 
-app.use(express.static(path.join(__dirname, 'client/build')));
+// app.use(express.static(path.join(__dirname, 'client/build')));
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
-});
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+// });
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -26,7 +26,10 @@ app.get("/", (req, res) => {
 
 // Define a function called getNewAuthToken that retrieves a new Twilio AUTH token
 async function getNewAuthToken() {
-  const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+  const client = twilio(
+    process.env.TWILIO_ACCOUNT_SID,
+    process.env.TWILIO_AUTH_TOKEN
+  );
   const token = await client.tokens.create();
   return token.iceServers;
 }
@@ -40,7 +43,7 @@ function updateAuthTokenInConfig(newToken) {
 setInterval(async () => {
   const newToken = await getNewAuthToken();
   updateAuthTokenInConfig(newToken);
-  console.log('Twilio AUTH token updated');
+  console.log("Twilio AUTH token updated");
 }, 60 * 60 * 1000); // Run the function every hour (in milliseconds)
 
 // Send SMS route
