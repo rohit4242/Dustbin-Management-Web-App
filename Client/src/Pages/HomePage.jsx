@@ -3,7 +3,6 @@ import { db } from "../firebase";
 import { ref, onValue } from "firebase/database";
 import DustbinBox from "../Components/DustbinBox";
 import Spinner from "../Components/Spinner";
-import SendSMS from "../Components/SendSMS";
 const HomePage = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -15,7 +14,6 @@ const HomePage = () => {
     onValue(ref(db, "smartbin"), (snapshot) => {
       snapshot.forEach((childSnapshot) => {
         if (childSnapshot.val().level > 80) {
-          console.log("full message");
           msg.push({
             key: childSnapshot.key,
             data: childSnapshot.val(),
@@ -30,7 +28,7 @@ const HomePage = () => {
       });
     });
     setData(val);
-  }, []);
+  }, [data]);
 
   if (loading) return <Spinner message="Loading Your Data" />;
 
@@ -42,7 +40,6 @@ const HomePage = () => {
             <DustbinBox key={index} data={value.data} name={value} />
           ))}
       </div>
-      {/* <button className="w-10 p-4 bg-teal-500 rounded-md"></button> */}
     </div>
   );
 };
